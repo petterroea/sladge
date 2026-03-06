@@ -6,6 +6,8 @@ The sladge (slop badge) is a badge for self-declaration of vibe coding, to be us
 
 The goal of the sladge is to protect third party users from wasting time reviewing or maintaining low quality LLM-generated code, when the intention is not that humans are to do so. It can also be used to warn users about the quality level of the software. "Your mileage may vary", but for LLM-generated software.
 
+Instead of focusing on "Should we allow LLMs or not", the goal is to create discussion around how to use it properly without wasting others' time.
+
 The HTML for sladge.net was itself vibe coded, and text rewritten by human.
 
 See the website for more details.

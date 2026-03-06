@@ -1,7 +1,17 @@
 <svg width="136" height="20" viewBox="0 0 136 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x=".5" y=".5" width="135" height="19" rx="3" fill="#12121a" stroke="#84cc16" stroke-width="1"/>
-  <rect x=".5" y=".5" width="38" height="19" rx="3" fill="#84cc16"/>
-  <rect x="34" y=".5" width="5" height="19" fill="#84cc16"/>
+  <linearGradient id="s" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <clipPath id="r"><rect width="136" height="20" rx="3" fill="#fff"/></clipPath>
+  <g clip-path="url(#r)">
+    <rect width="39" height="20" fill="#84cc16"/>
+    <rect x="39" width="97" height="20" fill="#12121a"/>
+    <rect width="136" height="20" fill="url(#s)"/>
+  </g>
+  <g>
+    <rect x=".5" y=".5" width="135" height="19" rx="3" fill="none" stroke="#84cc16" stroke-width="1"/>
+  </g>
   <foreignObject x="6" y="0" width="28" height="20"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:13px;text-align:center;line-height:20px;">🤮</div></foreignObject>
-  <text x="86" y="13.5" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11" font-weight="400" fill="#c9c9d9">AI slop inside</text>
+  <text x="86" y="14" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11" fill="#c9c9d9">AI slop inside</text>
 </svg>

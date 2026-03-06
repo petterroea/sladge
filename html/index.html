@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sladge.net — The AI Slop Badge</title>
+  <meta name="description" content="Self-declare heavy LLM use in your projects. Because shipping unchecked AI-generated without warning is just rude.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #1e1e2e;
+      --text: #c9c9d9;
+      --text-dim: #6a6a7a;
+      --accent: #84cc16;
+      --accent-dim: #4d7c0f;
+      --danger: #ef4444;
+      --green: #22c55e;
+      --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* Subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      padding: 6rem 0 4rem;
+      text-align: center;
+    }
+
+    .badge-display {
+      display: inline-block;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge-svg {
+      filter: drop-shadow(0 0 40px rgba(132, 204, 22, .2));
+      transition: filter .3s;
+    }
+    .badge-svg:hover {
+      filter: drop-shadow(0 0 60px rgba(132, 204, 22, .35));
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: .75rem;
+    }
+    .hero h1 .accent { color: var(--accent); }
+
+    .hero .tagline {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      max-width: 520px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ---- SECTIONS ---- */
+    section {
+      padding: 3rem 0;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: .5rem;
+    }
+
+    p + p { margin-top: 1rem; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ---- THE TWO PATHS ---- */
+    .paths {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .paths { grid-template-columns: 1fr; }
+    }
+
+    .path-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+    }
+
+    .path-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: .75rem;
+      display: block;
+    }
+
+    .path-card h3 {
+      color: var(--accent);
+    }
+
+    .path-card p {
+      font-size: .95rem;
+      color: var(--text-dim);
+    }
+
+    /* ---- WHY ---- */
+    .why-list {
+      list-style: none;
+      margin-top: 1rem;
+    }
+
+    .why-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-dim);
+    }
+
+    .why-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: .55em;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 2px;
+      transform: rotate(45deg);
+    }
+
+    /* ---- CODE BLOCK ---- */
+    .code-section {
+      margin-top: 1.5rem;
+    }
+
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .6rem 1rem;
+      background: rgba(255,255,255,.02);
+      border-bottom: 1px solid var(--border);
+      font-size: .8rem;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: .75rem;
+      padding: .25rem .6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .code-body {
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: .85rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .code-body code {
+      white-space: pre;
+    }
+
+    .code-body .comment { color: #4a5568; }
+    .code-body .tag { color: #84cc16; }
+    .code-body .attr { color: #a78bfa; }
+    .code-body .str { color: #34d399; }
+
+    /* ---- MANIFESTO ---- */
+    .manifesto-block {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 1.5rem 1.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .manifesto-block p {
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--text);
+    }
+
+    .manifesto-block .attribution {
+      font-style: normal;
+      font-size: .85rem;
+      color: var(--text-dim);
+      margin-top: .75rem;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      padding: 3rem 0;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: .85rem;
+    }
+
+    footer .sladge-mark {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* ---- BADGE INLINE SVG ---- */
+    .inline-badge {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="badge-display">
+      <svg class="badge-svg" width="280" height="56" viewBox="0 0 280 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="278" height="54" rx="10" fill="#12121a" stroke="#84cc16" stroke-width="1.5"/>
+        <rect x="1" y="1" width="90" height="54" rx="10" fill="#84cc16"/>
+        <path d="M90 1h1v54h-1z" fill="#84cc16"/>
+        <rect x="80" y="1" width="12" height="54" fill="#84cc16"/>
+        <foreignObject x="20" y="2" width="50" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:30px;text-align:center;line-height:40px;">🤮</div></foreignObject>
+        <text x="44" y="49" text-anchor="middle" font-family="monospace" font-size="9" font-weight="700" fill="#1a2e05">SLADGE</text>
+        <text x="185" y="25" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="#c9c9d9">AI SLOP INSIDE</text>
+        <text x="185" y="42" text-anchor="middle" font-family="monospace" font-size="9" fill="#6a6a7a">here be dragons</text>
+      </svg>
+    </div>
+
+    <h1>The <span class="accent">Sladge</span></h1>
+    <p class="tagline">Responsible AI use starts with transparency.</p>
+    <p class="tagline" style="font-size:.95rem; margin-top:.25rem;">A self-declaration badge for heavy LLM use. Because shipping unchecked AI slop without warning is plain rude.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- WHY -->
+  <section>
+    <h2>The problem</h2>
+    <p>LLM-generated code looks plausible, especially to inexperienced developers. However, it routinely contains subtle bugs, unchecked assumptions, and confident-sounding nonsense. A human implementing their own design catches problems <em>during</em> implementation. An LLM skips that feedback loop entirely.</p>
+    <p>The result is code that seems to solve the problem, but is buggy and unmaintainable due to its low quality nature. Without declaring slop, you risk other humans finding out how bad the code is the hard way when they take it upon themselves to review or maintain it. In a shared codebase, that someone is your colleague. In open source, it's a stranger who trusted your contribution.</p>
+
+    <ul class="why-list">
+      <li>LLMs are prone to blindly following instructions</li>
+      <li>Bugs and vulnerabilities hide behind mountains of code that "seems correct" because it runs.</li>
+      <li>Poor code means a higher burden on human reviewers</li>
+      <li>Without disclosure, AI slop is almost indistinguishable from carelessness</li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- TWO PATHS -->
+  <section>
+    <h2>Two honest paths</h2>
+    <p>In the age of responsible AI use, you have exactly two ethical options:</p>
+
+    <div class="paths">
+      <div class="path-card">
+        <span class="icon" aria-hidden="true">&#9888;</span>
+        <h3>100% Vibe Code</h3>
+        <p>Go full AI. Ship the slop. Few will judge you for vibe coding a quick PoC. But <strong>warn people</strong>. Slap on the sladge and let readers know: <em>"here be dragons - you are probably best off maintaining it using an LLM."</em> Honest, upfront, no surprises.</p>
+      </div>
+      <div class="path-card">
+        <span class="icon" aria-hidden="true">&#9745;</span>
+        <h3>Personal Responsibility</h3>
+        <p>Use LLMs where you see fit: autocomplete, drafts, boilerplate, but <strong>you</strong> are personally responsible for every line that ships. Just like with code you wrote yourself, you review it yourself before lending an eye from others. You test it. You own it. No badge needed.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem; color: var(--text-dim); font-size:.95rem;">What's <em>not</em> an option: pasting LLM output into a PR, skipping review, and presenting it as your own work. That's not "using AI" - that's offloading your responsibility onto others. Consider that slop PRs at organizations with a preference for code quality may simply turn into a distributed prompt writing exercise. If meetings are a time waste multiplier, so is 5 people gradually requesting changes on a slop PR.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- USAGE -->
+  <section>
+    <h2>Use the badge</h2>
+    <p>Add the sladge to your README, repo, or project page to honestly signal heavy LLM involvement.</p>
+
+    <div style="text-align:center; margin-top:1.5rem;">
+      <img src="badge.svg" alt="AI Slop Inside" width="136" height="20">
+    </div>
+
+    <div class="code-section">
+      <div class="code-block">
+        <div class="code-header">
+          <span>markdown</span>
+          <button class="copy-btn" onclick="copyCode(this)" data-code="[![AI Slop Inside](https://sladge.net/badge.svg)](https://sladge.net)">copy</button>
+        </div>
+        <div class="code-body"><code><span class="comment">&lt;!-- Add to your README --&gt;</span>
+<span class="tag">[![</span><span class="str">AI Slop Inside</span><span class="tag">]</span><span class="tag">(</span><span class="attr">https://sladge.net/badge.svg</span><span class="tag">)</span><span class="tag">]</span><span class="tag">(</span><span class="attr">https://sladge.net</span><span class="tag">)</span></code></div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>html</span>
+          <button class="copy-btn" onclick="copyCode(this)" data-code='<a href="https://sladge.net"><img src="https://sladge.net/badge.svg" alt="AI Slop Inside"></a>'>copy</button>
+        </div>
+        <div class="code-body"><code><span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="str">"https://sladge.net"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="str">"https://sladge.net/badge.svg"</span>
+       <span class="attr">alt</span>=<span class="str">"AI Slop Inside"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/a&gt;</span></code></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- MANIFESTO -->
+  <section>
+    <h2>The point</h2>
+    <p>This isn't anti-AI. LLMs are useful tools. But tools require responsibility from the person wielding them.</p>
+
+    <div class="manifesto-block">
+      <p>If you let an LLM write your code and you didn't verify it, you didn't "use AI to be more productive." You generated technical debt and passed the cost of cleaning it up to someone else.</p>
+      <p style="margin-top:.75rem;">The sladge exists so that "someone else" at least gets a heads up.</p>
+      <div class="attribution">&mdash; sladge.net</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- FAQ -->
+  <section>
+    <h2>FAQ</h2>
+
+    <h3>Is this serious?</h3>
+    <p>Semi-serious. The problem is real, and the tone is deliberately blunt. If it makes one person think twice before submitting unverified slop as real work, it worked.</p>
+
+    <h3 style="margin-top:1.25rem;">Why was this site made?</h3>
+    <p>Seeing people starting to consider making chrome plugins for marking "known AI users" made me want to contribute something that hopefully helps encourage discussions about responsible AI work in group collaboration, and motivate people to self-declare vibecoded work rather than others doing it for them.</p>
+
+    <h3 style="margin-top:1.25rem;">Do I need this if I just use Copilot for autocomplete?</h3>
+    <p>No. If you're reading, understanding, and testing every suggestion before it ships, you're taking personal responsibility. That's path two. The sladge is for when the AI is doing the thinking and you're just the delivery mechanism.</p>
+
+    <h3 style="margin-top:1.25rem;">What counts as "heavy LLM use"?</h3>
+    <p>In general, if an LLM is doing most of the actual coding and all you are doing is explaining what you want, it is heavy LLM use. The litmus test is: Are you able to explain what changes you made in a code review, without first looking at the diff?</p>
+
+    <h3 style="margin-top:1.25rem;">Isn't this just shaming people?</h3>
+    <p>It's the opposite. It's giving people a dignified (if slightly sarcastic) way to be upfront. Few will shame you for experimenting with AI, but trying to sell off slop as real work actively hurts your peers.</p>
+
+    <h3 style="margin-top:1.25rem;">But LLMs allow me to ship my app in one day!</h3>
+    <p><a href="https://threadreaderapp.com/thread/1929017755136561402.html">Yes, and you will probably also get pwned</a>. It turns out vibe coded apps are often insecure, but time-to-market does matter. What matters more to you - money, or the responsibility you have to your end-users? This author believes LLMs have a strong future for developing frontends and boilerplate, but you are playing with fire if you trust vibecoded code to protect your business - <b>especially</b> if you don't review it.</p>
+
+    <h3 style="margin-top:1.25rem;">This site doesn't address the copyright issues of using LLMs to generate code</h3>
+    <p>This is a fight to be fought, although it sadly seems it is a lost cause. Copyright simply doesn't matter if infringing on it is beneficial to powerful entities, and it sucks. However, in order to make a clear point, this site focuses specifically on the responsibility of not having your peers unknowingly deal with vibe-coded code.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- READ MORE -->
+  <section>
+    <h2>Read more</h2>
+    <p>Real-world examples of AI-generated code causing problems:</p>
+
+    <ul class="why-list">
+      <li><a href="https://en.wikipedia.org/wiki/Slopsquatting">Slopsquatting</a> &mdash; Wikipedia</li>
+      <li><a href="https://cyberplace.social/@GossiTheDog/116080909947754833">Today in InfoSec Job Security News</a> &mdash; Kevin Beaumont, 2026</li>
+      <li><a href="https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/">The end of the curl bug-bounty</a> &mdash; Daniel Stenberg, 2026</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p><span class="sladge-mark">sladge.net</span> &mdash; The AI Slop Badge</p>
+    <p style="margin-top:.5rem;">Declare your slop. Ship honestly.</p>
+  </footer>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const code = btn.getAttribute('data-code');
+  navigator.clipboard.writeText(code).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'copied!';
+    btn.style.color = '#22c55e';
+    btn.style.borderColor = '#22c55e';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1500);
+  });
+}
+</script>
+
+</body>
+</html>

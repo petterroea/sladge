@@ -10,3 +10,15 @@ The HTML for sladge.net was itself vibe coded, and text rewritten by human.
 
 See the website for more details.
 
+## Scope
+
+There are many problems with LLMs that the tech community as well as society at large need to tackle with in the coming years, including:
+
+ * Instant gratification being a powerful force stopping people from actually putting in the hard work to learn skills properly
+ * LLM chatbot's effect on loneliness and replacing real friendships
+ * AI Psycosis
+ * The large-scale "rules for thee but not for me" copyright violations performed by large companies training the models
+ * And many more
+
+I acknowledge these as problems and it frankly scares me that none of the big actors that profit from LLM training dare discuss them. However, to make the point stick and avoid too many possible strawman counter-arguments, this site exists to comment on exposing other people to LLM code without proper review.
+
